@@ -50,11 +50,9 @@ mean(dia2)
 mean(dia3)
 
 # Part c
-for (i in prob)
-{
   pc = numeric()
   for (j in 1:50) {
-    for (p in seq(from = 0, to = i, by = 1e-03)) {
+    for (p in seq(from = 0, to = prob[1], by = 1e-03)) {
       g = sample_gnp(num_nodes, p)
       if (is.connected(g)) 
         break
@@ -62,4 +60,3 @@ for (i in prob)
     pc = c(pc, p)
   }
   print(mean(pc))
-}
