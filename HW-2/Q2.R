@@ -1,86 +1,71 @@
+## Download and install the package
+#install.packages("igraph")
+
+## Load package
 library(igraph)
 library(netrw)
 
 # Part a
-num_nodes=1000
-bg=barabasi.game(num_nodes, directed=FALSE)
-bgd=diameter(bg)
+num_nodes = 1000
+bg1 <- barabasi.game(num_nodes, directed = FALSE)
+diameter(bg1)
 
 # Part b
-# Part 
-RandomWalker = function(g)
+myRWfunc <- function(g,num_walkers,txt)
 {
- avg = numeric()
+  avg = numeric()
   std = numeric()
-  walkNum = 100 #100, 500
   for (i in 1:100) {
-    dists = numeric()
-    rw <- netrw(g, walker.num = walkNum, damping = 1, T = i, output.walk.path = TRUE)
-    #r=netrw(g, T=i,damping=DF, output.walk.path=TRUE)
-    #r1<- netrw(graph1, walker.num=1000, start.node=1:1000, damping=1, T=i, output.walk.path=TRUE)
+    all_dist = numeric()
+    rw <- netrw(g, walker.num = num_walkers, damping = 1, T = i, output.walk.path = TRUE)
     paths = rw$walk.path
-    #print(paths) matrix of steps X walkers
-    for (j in 1:walkNum) {
-      #print(paths[1, j])
-      #print(paths[i, j])
+    for (j in 1:num_walkers) {
       dist = shortest.paths(g, v = paths[1, j], to = paths[i, j])
       if (dist == Inf) 
         dist = 0
-      dists = c(dists, dist)
+      all_dist = c(all_dist, dist)
     }
-    avg = c(avg, mean(dists))
-    std = c(std, sd(dists))
+    avg = c(avg, mean(all_dist))
+    std = c(std, sd(all_dist))
   }
+  print(avg)
+  print(std)
+  par(mfrow=c(1,2))
+  plot(avg, type='l',col="red", main = paste0("avg ",txt," nodes"), xlab = "step size", ylab = "avg")
+  plot(std, type='l',col="blue", main = paste0("std ",txt," nodes"), xlab = "step size", ylab = "std")
+  dev.copy(png,paste0(txt,'avgstd.png'))
+  dev.off()
 }
 
-
-#layout(matrix(c(1,2),1,2,byrow=T))
-par(mfrow=c(1,2))#Part e
-par(mfrow=c(1,2))
-#hist(degree(g),main ="Degree Distribution of the Graph",xlab="degree",col="blue")
-plot(degree(rg1), type = "l", main = "Degree Distribution with p=0.05 ",xlab="degree",ylab="relative frequency")
-deg2=numeric()
-deg2=rw$walk.path[100,]
-#hist(degree(g,deg2),main ="Degree Distribution at end of walk",xlab="degree",col="blue")
-plot(degree(rg1,deg2), type="l", main = "Degree Distribution with p=0.05 ",xlab="degree",ylab="relative frequency")
-#hist(deg, breaks = seq(-0.5, by = 1, length.out = max(deg) + 2), freq = F, main = "Histogram of degree distribution")
-
-degrees = numeric()
-walkNum = 1000
-stepSize = 100
-g <- random.graph.game(1000, p = 0.01, direct = FALSE)
-deg = degree(g)
-for (i in 1:100) {
-  rw <- netrw(g, walker.num = walkNum, damping = 1, T = stepSize, output.walk.path = TRUE)
-  paths = rw$walk.path
-  for (j in 1:walkNum) {
-    #og
-    deg = c(deg, deg[paths[stepSize, j]])
-    degrees = c(degrees, deg[paths[stepSize, j]])
-  }
-}
-
-hist(degrees, breaks = seq(-0.5, by = 1, length.out = max(deg) + 2), freq = F, main = "Histogram of degree distribution")
-hist(deg, breaks = seq(-0.5, by = 1, length.out = max(deg) + 2), freq = F, main = "Histogram of degree distribution")
-#h = hist(degree(g), breaks = seq(-0.5, by = 1, length.out = max(deg) + 2), freq = F, main = "Histogram of degree distribution")
-
-
+myRWfunc(bg1,100,"1000")
 
 # Part d
 n2=100
-rg2 <- random.graph.game(n2, prob)
-d2=diameter(rg2)
-RandomWalker(rg2)
+bg2 <- barabasi.game(n2, directed = FALSE)
+d2 <- diameter(bg2)
+print(d2)
+myRWfunc(bg2,100,"100")
+
 n3=10000
-rg3 <- random.graph.game(n3, prob)
-d3=diameter(rg3)
-RandomWalker(rg3)
-plot(avg, main = "average distance_1000 nodes", xlab = "step size", ylab = "avg")
-plot(std, main = "standard deviation_1000 nodes", xlab = "step size", ylab = "std")
+bg3 <- barabasi.game(n3, directed = FALSE)
+d3 <- diameter(bg3)
+print(d3)
+myRWfunc(bg3,100,"10000")
 
-RandomWalker(bg)
-
-# Part c
-
+#Part e
+degrees = numeric()
+num_walkers = 100
+stepSize = 100
+deg <- degree(bg1)
+rw <- netrw(bg1, walker.num = num_walkers, damping = 1, T = 100, output.walk.path = TRUE)
+paths = rw$walk.path
+for (j in 1:num_walkers) {
+  degrees = c(degrees, deg[paths[stepSize, j]])
+}
+par(mfrow=c(1,2))
+hist(degrees, breaks = seq(-0.5, by = 1, length.out = max(deg) + 2), freq = F, main = "deg dist. of nodes-random walk",col="purple")
+hist(deg, breaks = seq(-0.5, by = 1, length.out = max(deg) + 2), freq = F, main = "degree distribution of the graph",col="palegreen")
+dev.copy(png,'Q2parte3.png')
+dev.off()
 
 
