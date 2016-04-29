@@ -1,6 +1,6 @@
 library("igraph")
 ####### Q1
-filename="E:\\Punit\\D\\UCLA\\Spring16\\CS232EE\\Code\\ee232e-graphs-networks\\HW-3\\sorted_directed_net.txt"
+filename="./sorted_directed_net.txt"
 g = read_graph(file = filename ,format = "ncol",directed = T)
 con = is.connected(g)
 clusters = components(g)
