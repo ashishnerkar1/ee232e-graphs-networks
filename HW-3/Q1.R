@@ -64,3 +64,27 @@ hist(lp_sub_community$modularity)
 print(sizes(lp_sub_community))
 #plot(lp_sub_community,sub_community)
 
+
+# Que 5
+cat("\n\n*********Que 5 output\n\n")
+gcc_undirected2 = as.undirected(gcc,mode = "collapse",edge.attr.comb = sqrtweight)
+com_fg = fastgreedy.community(gcc_undirected2)
+
+com_index = which(sizes(com_fg)>100)
+for(i in 1:length(com_index))
+{
+  cat("\nSub-community index",com_index[[i]],":\n")
+  non_com = V(gcc_undirected2)[which(com_fg$membership != com_index[i])]
+  sub_com_100up = delete.vertices(gcc_undirected2,non_com)
+  sub_com_100up_fg = fastgreedy.community(sub_com_100up)
+  cat("sub-community structure using fastgreedy:\n")
+  print(sizes(sub_com_100up_fg))
+  print(modularity(sub_com_100up_fg))
+  sub_com_100up_lp = label.propagation.community(sub_com_100up)
+  cat("sub-community structure using labelpropagation:\n")
+  print(sizes(sub_com_100up_lp))
+  print(modularity(sub_com_100up_lp))
+}
+
+
+
