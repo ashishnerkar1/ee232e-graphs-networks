@@ -1,7 +1,8 @@
 library("igraph")
-library("MASS")
 
-filePath = "C:\\E-232E-Graphs\\ee232e-graphs-networks\\Project-1\\facebook_combined.txt"
+#filePath = "C:\\E-232E-Graphs\\ee232e-graphs-networks\\Project-1\\facebook_combined.txt"
+#getwd()
+filePath = "./facebook_combined.txt"
 
 g = read.graph(file = filePath,format = "ncol", directed = FALSE)
 
